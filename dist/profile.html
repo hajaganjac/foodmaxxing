@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My profile — FoodMaxxing</title>
+  <link rel="stylesheet" crossorigin href="/assets/styles-gI4uNAKz.css">
+</head>
+<body>
+    <script src="/auth.js"></script>
+    <script>
+        if (!getCurrentUser()) { window.location.replace('login.html'); }
+    </script>
+    <div class="app-container">
+        <nav class="navbar">
+            <div class="navbar-content">
+                <a href="index.html" class="logo" style="text-decoration:none;color:inherit;">
+                    <span class="logo-icon">🍜</span>
+                    <span class="logo-text">FoodMaxxing</span>
+                </a>
+                <div class="nav-links">
+                    <a href="generator.html" class="nav-link">Generator</a>
+                    <a href="index.html#discoveries" class="nav-link">Ideas</a>
+                    <a href="profile.html" class="nav-link nav-link-active">Profile</a>
+                    <button type="button" class="nav-link nav-logout" id="navLogout" style="background:none;border:none;cursor:pointer;font:inherit;padding:0;padding-bottom:4px;">Log out</button>
+                </div>
+            </div>
+        </nav>
+
+        <main class="profile-page">
+            <section class="profile-header-section">
+                <div class="profile-avatar-wrap">
+                    <img id="profileAvatar" class="profile-avatar" src="" alt="Your photo" style="display:none;">
+                    <div id="profileAvatarPlaceholder" class="profile-avatar-placeholder">?</div>
+                    <label class="profile-avatar-upload" for="profileAvatarInput">Change photo</label>
+                    <input type="file" id="profileAvatarInput" accept="image/*" style="position:absolute;opacity:0;width:0;height:0;">
+                </div>
+                <div class="profile-name-wrap">
+                    <h1 class="profile-name" id="profileName">Student</h1>
+                    <p class="profile-email" id="profileEmail"></p>
+                </div>
+            </section>
+
+            <section class="profile-section profile-groceries">
+                <h2 class="profile-section-title">Grocery notes</h2>
+                <p class="profile-section-desc">Keep a running list for your next supermarket run.</p>
+                <textarea id="groceryNotes" class="profile-notes-input" placeholder="e.g. Milk, eggs, pasta, tomatoes…" rows="5"></textarea>
+                <button type="button" class="btn-save-notes" id="saveGroceryNotes">Save notes</button>
+            </section>
+
+            <section class="myday-section profile-tracking" id="myday">
+                <h2 class="profile-section-title">My day</h2>
+                <p class="myday-subtitle">What you cooked today & how healthy you've been</p>
+                <div class="myday-card myday-card-elevated" id="mydayCard">
+                    <div class="myday-progress-wrap" id="mydayProgress"><!-- filled by JS --></div>
+                    <div class="myday-stats" id="mydayStats"><!-- filled by JS --></div>
+                    <div class="myday-meals" id="mydayMeals"><!-- filled by JS --></div>
+                </div>
+            </section>
+        </main>
+
+        <button type="button" class="dark-mode-toggle" id="darkModeToggle" aria-label="Toggle dark mode" title="Dark mode">
+            <span class="dark-mode-icon sun-icon">☀️</span>
+            <span class="dark-mode-icon moon-icon" aria-hidden="true">🌙</span>
+        </button>
+        <div id="chatbotRoot"></div>
+    </div>
+
+    <script src="/dark-mode.js"></script>
+    <script src="/chatbot.js"></script>
+    <script>
+        (function () {
+            var user = getCurrentUser();
+            if (!user) return;
+
+            document.getElementById('navLogout').addEventListener('click', function () { logout(); });
+
+            document.getElementById('profileName').textContent = user;
+            document.getElementById('profileEmail').textContent = 'Logged in as ' + user;
+
+            var profile = getProfile(user);
+            var notesEl = document.getElementById('groceryNotes');
+            var avatarEl = document.getElementById('profileAvatar');
+            var placeholderEl = document.getElementById('profileAvatarPlaceholder');
+
+            if (notesEl && profile.groceryNotes) notesEl.value = profile.groceryNotes;
+            if (profile.avatar) {
+                avatarEl.src = profile.avatar;
+                avatarEl.style.display = 'block';
+                placeholderEl.style.display = 'none';
+            }
+
+            document.getElementById('saveGroceryNotes').addEventListener('click', function () {
+                var text = notesEl ? notesEl.value : '';
+                saveProfile(user, { groceryNotes: text });
+                this.textContent = 'Saved!';
+                var btn = this;
+                setTimeout(function () { btn.textContent = 'Save notes'; }, 1500);
+            });
+
+            document.getElementById('profileAvatarInput').addEventListener('change', function (e) {
+                var file = e.target && e.target.files[0];
+                if (!file || !file.type.match(/^image\//)) return;
+                var r = new FileReader();
+                r.onload = function () {
+                    var dataUrl = r.result;
+                    saveProfile(user, { avatar: dataUrl });
+                    avatarEl.src = dataUrl;
+                    avatarEl.style.display = 'block';
+                    placeholderEl.style.display = 'none';
+                };
+                r.readAsDataURL(file);
+            });
+
+            document.addEventListener('DOMContentLoaded', refreshMyDay);
+        })();
+    </script>
+</body>
+</html>

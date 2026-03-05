@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log in — FoodMaxxing</title>
+    <style>
+        /* Figma design: gradient page + floating background + glass card */
+        .login-page {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            overflow: hidden;
+            position: relative;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            background: linear-gradient(to bottom right, #FFF5F3, #FFF9F5, #FDF4EB);
+        }
+
+        .login-floating-bg {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background: linear-gradient(to bottom right, #FFF5F3, #FFF9F5, #FDF4EB);
+        }
+        /* Animated glowing orbs – exact Figma specs (scale, opacity, duration) */
+        .login-orb {
+            position: absolute;
+            border-radius: 50%;
+            mix-blend-mode: multiply;
+            filter: blur(100px);
+            will-change: transform;
+            backface-visibility: hidden;
+        }
+        .login-orb-1 {
+            top: -10%;
+            left: -10%;
+            width: 50vw;
+            height: 50vw;
+            background: rgba(253, 164, 175, 0.2);
+            animation: login-orb-1 15s ease-in-out infinite;
+        }
+        .login-orb-2 {
+            bottom: -10%;
+            right: -10%;
+            width: 50vw;
+            height: 50vw;
+            background: rgba(253, 186, 140, 0.2);
+            animation: login-orb-2 18s ease-in-out 1s infinite;
+        }
+        .login-orb-3 {
+            top: 40%;
+            left: 60%;
+            width: 30vw;
+            height: 30vw;
+            background: rgba(253, 224, 71, 0.1);
+            filter: blur(80px);
+            animation: login-orb-3 20s ease-in-out 2s infinite;
+        }
+        @keyframes login-orb-1 {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+        }
+        @keyframes login-orb-2 {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.3); opacity: 0.9; }
+        }
+        @keyframes login-orb-3 {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.5); opacity: 0.6; }
+        }
+        /* Floating emojis – grid-based spread, drift + rotate (Figma FloatingBackground) */
+        .login-emoji-wrap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        .login-float-emoji {
+            position: absolute;
+            top: 0;
+            left: 0;
+            font-size: 2.5rem;
+            will-change: transform;
+            pointer-events: none;
+            animation: login-emoji-drift linear infinite;
+            backface-visibility: hidden;
+        }
+        @keyframes login-emoji-drift {
+            0%, 100% { transform: translate(var(--x1), var(--y1)) scale(var(--s)) rotate(var(--r, 0deg)); }
+            50% { transform: translate(var(--x2), var(--y2)) scale(var(--s)) rotate(calc(var(--r, 0deg) + 180deg)); }
+        }
+
+        .login-card {
+            position: relative;
+            z-index: 20;
+            width: 100%;
+            max-width: 420px;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 32px;
+            box-shadow: 0 24px 80px -16px rgba(245, 108, 91, 0.25);
+            animation: login-card-in 0.6s ease-out;
+        }
+        @keyframes login-card-in {
+            from { opacity: 0; transform: translateY(30px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @media (min-width: 640px) {
+            .login-card { padding: 2.5rem; }
+        }
+
+        .login-logo {
+            text-align: center;
+            margin-bottom: 1.25rem;
+        }
+        .login-logo span {
+            font-size: 40px;
+            line-height: 1;
+            display: inline-block;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
+
+        .login-card h1 {
+            font-size: 32px;
+            font-weight: 800;
+            text-align: center;
+            color: #4A202A;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+        }
+
+        .login-card .login-subtitle {
+            text-align: center;
+            color: #6B5A5C;
+            font-size: 16px;
+            margin-bottom: 2rem;
+            line-height: 1.4;
+            padding: 0 0.25rem;
+            font-weight: 500;
+        }
+
+        .login-tabs {
+            display: flex;
+            border-bottom: 1px solid #EADEDC;
+            margin-bottom: 2rem;
+            width: 100%;
+        }
+        .login-tabs button {
+            flex: 1;
+            padding-bottom: 1rem;
+            border: none;
+            background: none;
+            font-size: 15px;
+            font-weight: 700;
+            color: #8F7D7F;
+            cursor: pointer;
+            transition: color 0.2s;
+            position: relative;
+        }
+        .login-tabs button:hover {
+            color: #552B35;
+        }
+        .login-tabs button.active {
+            color: #F56C5B;
+        }
+        .login-tabs button.active::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: -2px;
+            height: 3px;
+            background: #F56C5B;
+            border-radius: 3px 3px 0 0;
+        }
+
+        .login-error {
+            background: rgba(245, 108, 91, 0.12);
+            color: #c24130;
+            padding: 0.6rem 1rem;
+            border-radius: 12px;
+            font-size: 14px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        .login-error.visible {
+            display: block;
+        }
+
+        .login-form label {
+            display: block;
+            font-size: 15px;
+            font-weight: 700;
+            color: #4A202A;
+            margin-bottom: 0.5rem;
+        }
+        .login-form input {
+            width: 100%;
+            padding: 14px 1rem;
+            font-size: 16px;
+            color: #111;
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 14px;
+            box-sizing: border-box;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.04);
+            backdrop-filter: blur(8px);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .login-form input::placeholder {
+            color: #9ca3af;
+        }
+        .login-form input:focus {
+            outline: none;
+            border-color: #F56C5B;
+            box-shadow: 0 0 0 4px rgba(245, 108, 91, 0.2);
+        }
+        .login-form .field-wrap {
+            margin-bottom: 1.5rem;
+        }
+        .login-form .btn-primary {
+            width: 100%;
+            margin-top: 0.5rem;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 800;
+            color: white;
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            background: linear-gradient(135deg, #F66D5B, #F8B45B);
+            box-shadow: 0 8px 20px -6px rgba(245, 108, 91, 0.5);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .login-form .btn-primary:hover {
+            transform: scale(1.02);
+            box-shadow: 0 12px 24px -8px rgba(245, 108, 91, 0.6);
+        }
+        .login-form .btn-primary:active {
+            transform: scale(0.98);
+        }
+        .login-form .btn-primary.btn-loading {
+            pointer-events: none;
+            cursor: not-allowed;
+        }
+        .login-form .btn-primary.btn-loading:hover {
+            transform: none;
+        }
+        .btn-loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.35);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: login-spin 0.7s linear infinite;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+        @keyframes login-spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Hyperspace portal: card shrinks to circle then explodes to fill screen */
+        .login-card {
+            transform-origin: center center;
+            will-change: transform;
+        }
+        .login-page.login-portal-active .login-card {
+            animation: portal-shrink 0.55s cubic-bezier(0.55, 0.06, 0.68, 0.19) forwards, portal-explode 0.5s 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+        .login-page.login-portal-active .login-card .login-form,
+        .login-page.login-portal-active .login-card .login-tabs,
+        .login-page.login-portal-active .login-card .login-subtitle,
+        .login-page.login-portal-active .login-card .login-logo,
+        .login-page.login-portal-active .login-card h1,
+        .login-page.login-portal-active .login-card .login-error {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+        @keyframes portal-shrink {
+            to {
+                position: fixed;
+                left: 50%;
+                top: 50%;
+                width: 420px;
+                height: 480px;
+                margin-left: -210px;
+                margin-top: -240px;
+                transform: translate(-50%, -50%) scale(0.08);
+                border-radius: 50%;
+                overflow: hidden;
+            }
+        }
+        @keyframes portal-explode {
+            from {
+                position: fixed;
+                left: 50%;
+                top: 50%;
+                width: 420px;
+                height: 480px;
+                margin-left: -210px;
+                margin-top: -240px;
+                border-radius: 50%;
+                transform: translate(-50%, -50%) scale(0.08);
+            }
+            to {
+                position: fixed;
+                left: 50%;
+                top: 50%;
+                width: 420px;
+                height: 480px;
+                margin-left: -210px;
+                margin-top: -240px;
+                border-radius: 50%;
+                transform: translate(-50%, -50%) scale(12);
+                box-shadow: 0 0 0 100vmax rgba(255, 245, 243, 0.98);
+            }
+        }
+
+        /* Warp background: emojis shoot outward from center, scale + blur */
+        .login-page.login-portal-active .login-float-emoji {
+            animation: warp-out 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
+        }
+        @keyframes warp-out {
+            to {
+                transform: translate(calc(2 * var(--dx) * 1vw - 50vw), calc(2 * var(--dy) * 1vh - 50vh)) scale(5);
+                filter: blur(30px);
+                opacity: 0.6;
+            }
+        }
+
+        .login-tab {
+            display: none;
+        }
+        .login-tab.active {
+            display: block;
+        }
+    </style>
+  <link rel="stylesheet" crossorigin href="/assets/styles-gI4uNAKz.css">
+</head>
+<body>
+    <div class="login-page">
+        <div class="login-floating-bg" aria-hidden="true">
+            <div class="login-orb login-orb-1"></div>
+            <div class="login-orb login-orb-2"></div>
+            <div class="login-orb login-orb-3"></div>
+            <div class="login-emoji-wrap" id="loginEmojiWrap"></div>
+        </div>
+
+        <div class="login-card">
+            <div class="login-logo"><span>🍜</span></div>
+            <h1>FoodMaxxing</h1>
+            <p class="login-subtitle">Log in or create an account to track your meals and calories.</p>
+
+            <div class="login-tabs">
+                <button type="button" class="active" data-tab="login">Log in</button>
+                <button type="button" data-tab="register">Register</button>
+            </div>
+
+            <div id="loginError" class="login-error"></div>
+
+            <form id="loginForm" class="login-form login-tab active">
+                <div class="field-wrap">
+                    <label for="loginUsername">Username</label>
+                    <input type="text" id="loginUsername" name="username" required autocomplete="username" placeholder="e.g. hungry_hippo">
+                </div>
+                <div class="field-wrap">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" name="password" required autocomplete="current-password" placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn-primary">Let's Eat</button>
+            </form>
+
+            <form id="registerForm" class="login-form login-tab">
+                <div class="field-wrap">
+                    <label for="regUsername">Username</label>
+                    <input type="text" id="regUsername" name="username" required autocomplete="username" placeholder="e.g. hungry_hippo">
+                </div>
+                <div class="field-wrap">
+                    <label for="regPassword">Password</label>
+                    <input type="password" id="regPassword" name="password" required autocomplete="new-password" placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn-primary">Start Tracking</button>
+            </form>
+        </div>
+
+        <button type="button" class="dark-mode-toggle" id="darkModeToggle" aria-label="Toggle dark mode" title="Dark mode">
+            <span class="dark-mode-icon sun-icon">☀️</span>
+            <span class="dark-mode-icon moon-icon" aria-hidden="true">🌙</span>
+        </button>
+        <div id="chatbotRoot"></div>
+    </div>
+
+    <script src="/auth.js"></script>
+    <script src="/dark-mode.js"></script>
+    <script src="/chatbot.js"></script>
+    <script>
+        (function () {
+            var emojis = ['\uD83C\uDF5C', '\uD83E\uDD57', '\uD83C\uDF54', '\uD83C\uDF4E', '\uD83C\uDF55', '\uD83E\uDD51', '\uD83C\uDF69', '\uD83C\uDF63', '\uD83C\uDF2E', '\uD83E\uDD5E', '\uD83E\uDD50', '\uD83E\uDD69', '\uD83C\uDF36\uFE0F', '\uD83E\uDDC0', '\uD83C\uDF47', '\uD83C\uDF53'];
+            var wrap = document.getElementById('loginEmojiWrap');
+            if (!wrap) return;
+            var cols = 8, rows = 5;
+            var cellW = 120 / cols, cellH = 120 / rows;
+            for (var i = 0; i < cols * rows; i++) {
+                var col = i % cols, row = Math.floor(i / cols);
+                var depth = Math.random();
+                var baseX = -10 + col * cellW, baseY = -10 + row * cellH;
+                var startX = baseX + Math.random() * cellW, startY = baseY + Math.random() * cellH;
+                var endX = startX + (Math.random() * 30 - 15), endY = startY + (Math.random() * 30 - 15);
+                var duration = 40 + Math.random() * 80;
+                var delay = -(Math.random() * 40);
+                var scale = 0.8 + depth * 3.5;
+                var rotation = Math.random() * 360;
+                var blur = depth > 0.85 ? '12px' : depth < 0.2 ? '4px' : '0px';
+                var opacity = depth > 0.85 ? 0.7 : 0.4 + Math.random() * 0.4;
+                var el = document.createElement('div');
+                el.className = 'login-float-emoji';
+                el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                el.style.setProperty('--x1', startX + 'vw');
+                el.style.setProperty('--y1', startY + 'vh');
+                el.style.setProperty('--x2', endX + 'vw');
+                el.style.setProperty('--y2', endY + 'vh');
+                el.style.setProperty('--dx', String(startX));
+                el.style.setProperty('--dy', String(startY));
+                el.style.setProperty('--s', scale);
+                el.style.setProperty('--r', rotation + 'deg');
+                el.style.animationDuration = duration + 's';
+                el.style.animationDelay = delay + 's';
+                el.style.filter = 'blur(' + blur + ')';
+                el.style.opacity = opacity;
+                el.style.zIndex = scale > 2 ? 10 : 0;
+                wrap.appendChild(el);
+            }
+        })();
+    </script>
+    <script>
+        (function () {
+            var loginForm = document.getElementById('loginForm');
+            var registerForm = document.getElementById('registerForm');
+            var errorEl = document.getElementById('loginError');
+            var tabs = document.querySelectorAll('.login-tabs button');
+            var loginTab = document.querySelector('#loginForm');
+            var regTab = document.querySelector('#registerForm');
+
+            function showError(msg) {
+                errorEl.textContent = msg;
+                errorEl.classList.add('visible');
+            }
+            function hideError() {
+                errorEl.classList.remove('visible');
+            }
+
+            tabs.forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var tab = btn.dataset.tab;
+                    tabs.forEach(function (b) { b.classList.remove('active'); });
+                    btn.classList.add('active');
+                    loginTab.classList.toggle('active', tab === 'login');
+                    regTab.classList.toggle('active', tab === 'register');
+                    hideError();
+                });
+            });
+
+            function setButtonLoading(btn, loading) {
+                if (!btn) return;
+                if (loading) {
+                    btn.disabled = true;
+                    btn.classList.add('btn-loading');
+                    btn.dataset.originalHtml = btn.innerHTML;
+                    btn.innerHTML = '<span class="btn-loading-spinner"></span> Loading...';
+                } else {
+                    btn.disabled = false;
+                    btn.classList.remove('btn-loading');
+                    btn.innerHTML = btn.dataset.originalHtml || btn.innerHTML;
+                }
+            }
+
+            function runPortalThenRedirect() {
+                var page = document.querySelector('.login-page');
+                if (!page) return;
+                page.classList.add('login-portal-active');
+                setTimeout(function () {
+                    window.location.href = 'index.html';
+                }, 1200);
+            }
+
+            loginForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+                hideError();
+                var username = document.getElementById('loginUsername').value.trim();
+                var password = document.getElementById('loginPassword').value;
+                if (!username || !password) { showError('Please fill in both fields.'); return; }
+                var btn = this.querySelector('.btn-primary');
+                setButtonLoading(btn, true);
+                setTimeout(function () {
+                    var result = login(username, password);
+                    if (result.ok) runPortalThenRedirect();
+                    else {
+                        setButtonLoading(btn, false);
+                        showError(result.error);
+                    }
+                }, 1500);
+            });
+
+            registerForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+                hideError();
+                var username = document.getElementById('regUsername').value.trim();
+                var password = document.getElementById('regPassword').value;
+                if (!username || !password) { showError('Please fill in both fields.'); return; }
+                var btn = this.querySelector('.btn-primary');
+                setButtonLoading(btn, true);
+                setTimeout(function () {
+                    var result = register(username, password);
+                    if (result.ok) runPortalThenRedirect();
+                    else {
+                        setButtonLoading(btn, false);
+                        showError(result.error);
+                    }
+                }, 1500);
+            });
+        })();
+    </script>
+</body>
+</html>

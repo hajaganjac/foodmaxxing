@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protein Powerhouses — FoodMaxxing</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <script src="/auth.js"></script>
+    <script>
+        if (!getCurrentUser()) { window.location.replace('login.html'); }
+    </script>
+    <div class="app-container">
+        <nav class="navbar">
+            <div class="navbar-content">
+                <a href="index.html" class="logo" style="text-decoration:none;color:inherit;display:flex;align-items:center;gap:0.75rem;">
+                    <span class="logo-icon">🍜</span>
+                    <span class="logo-text">FoodMaxxing</span>
+                </a>
+                <div class="nav-links">
+                    <a href="generator.html" class="nav-link">Generator</a>
+                    <a href="chat.html" class="nav-link">Chatbot</a>
+                    <a href="index.html#discoveries" class="nav-link">Ideas</a>
+                    <a href="profile.html" class="nav-link">Profile</a>
+                    <button type="button" class="nav-link nav-logout" id="navLogout" style="background:none;border:none;cursor:pointer;font:inherit;padding:0;padding-bottom:4px;">Log out</button>
+                </div>
+            </div>
+        </nav>
+
+        <section class="explore-hero explore-hero-protein">
+            <span class="explore-emoji">🔥</span>
+            <h1>Protein Powerhouses</h1>
+            <p class="explore-intro">Build muscle on a student budget. High-protein recipes that won’t break the bank.</p>
+        </section>
+
+        <section class="results-section explore-results">
+            <div class="recipes-grid" id="recipesContainer"></div>
+        </section>
+
+        <div class="modal-overlay" id="recipeModal" aria-hidden="true">
+            <div class="modal-content" role="dialog" aria-labelledby="modalTitle">
+                <button type="button" class="modal-close" id="modalClose" aria-label="Close">&times;</button>
+                <div id="modalBody"></div>
+            </div>
+        </div>
+
+        <button type="button" class="dark-mode-toggle" id="darkModeToggle" aria-label="Toggle dark mode" title="Dark mode">
+            <span class="dark-mode-icon sun-icon">☀️</span>
+            <span class="dark-mode-icon moon-icon" aria-hidden="true">🌙</span>
+        </button>
+        <div id="chatbotRoot"></div>
+    </div>
+
+    <script src="/recipes-api.js"></script>
+    <script src="/script.js"></script>
+    <script src="/dark-mode.js"></script>
+    <script src="/chatbot.js"></script>
+    <script>
+        document.getElementById('navLogout').addEventListener('click', function () { logout(); });
+        document.getElementById('modalClose').addEventListener('click', closeRecipeModal);
+        document.getElementById('recipeModal').addEventListener('click', function (e) { if (e.target === this) closeRecipeModal(); });
+        document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeRecipeModal(); });
+        recipeListReady.then(function () {
+            var list = recipeDatabase.filter(function (r) {
+                return (r.preferences && r.preferences.indexOf('highprotein') !== -1) ||
+                    (r.tags && r.tags.indexOf('protein-rich') !== -1) ||
+                    (r.category === 'Chicken' || r.category === 'Beef' || r.category === 'Seafood');
+            });
+            displayRecipes(list.length ? list : recipeDatabase.slice(0, 12));
+        });
+    </script>
+</body>
+</html>

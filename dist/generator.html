@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Generator — FoodMaxxing</title>
+  <link rel="stylesheet" crossorigin href="/assets/styles-gI4uNAKz.css">
+</head>
+<body>
+    <script src="/auth.js"></script>
+    <script>
+        if (!getCurrentUser()) { window.location.replace('login.html'); }
+    </script>
+    <div class="app-container">
+        <nav class="navbar">
+            <div class="navbar-content">
+                <a href="index.html" class="logo" style="text-decoration:none;color:inherit;display:flex;align-items:center;gap:0.75rem;">
+                    <span class="logo-icon">🍜</span>
+                    <span class="logo-text">FoodMaxxing</span>
+                </a>
+                <div class="nav-links">
+                    <a href="generator.html" class="nav-link nav-link-active">Generator</a>
+                    <a href="index.html#discoveries" class="nav-link">Ideas</a>
+                    <a href="profile.html" class="nav-link">Profile</a>
+                    <button type="button" class="nav-link nav-logout" id="navLogout" style="background:none;border:none;cursor:pointer;font:inherit;padding:0;padding-bottom:4px;">Log out</button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- INTERACTIVE GENERATOR -->
+        <section class="generator-section" id="generator">
+            <div class="generator-wrapper">
+                <div class="generator-container">
+                    <div class="generator-steps-wrapper">
+                        <div class="generator-steps-inner" id="generatorStepsInner">
+                            <!-- Step 1: Budget Slider -->
+                            <div class="generator-step step-active" data-step="1">
+                                <div class="step-header">
+                                    <div class="step-number">01</div>
+                                    <div class="step-info">
+                                        <h2>What's your budget?</h2>
+                                        <p>Select a comfortable price per meal</p>
+                                    </div>
+                                </div>
+                                <div class="budget-container">
+                                    <div class="budget-display">
+                                        <span class="budget-value">€<span id="budgetValue">5</span></span>
+                                        <span class="budget-label">per meal</span>
+                                    </div>
+                                    <input type="range" id="budgetSlider" class="budget-slider" min="1" max="15" value="5" step="0.5">
+                                    <div class="budget-labels">
+                                        <span>€1</span>
+                                        <span>€8</span>
+                                        <span>€15</span>
+                                    </div>
+                                </div>
+                                <button class="step-next-btn" onclick="goToStep(2)">
+                                    Continue
+                                    <span class="arrow">→</span>
+                                </button>
+                            </div>
+
+                            <!-- Step 2: Dietary Preferences -->
+                            <div class="generator-step" data-step="2">
+                                <div class="step-header">
+                                    <div class="step-number">02</div>
+                                    <div class="step-info">
+                                        <h2>Any preferences?</h2>
+                                        <p>Tell us about your diet (optional)</p>
+                                    </div>
+                                </div>
+                                <div class="preferences-grid">
+                                    <button class="preference-chip" data-preference="vegetarian" onclick="togglePreference(this)">
+                                        <span class="chip-icon">🥬</span>
+                                        <span class="chip-label">Vegetarian</span>
+                                    </button>
+                                    <button class="preference-chip" data-preference="vegan" onclick="togglePreference(this)">
+                                        <span class="chip-icon">🌱</span>
+                                        <span class="chip-label">Vegan</span>
+                                    </button>
+                                    <button class="preference-chip" data-preference="halal" onclick="togglePreference(this)">
+                                        <span class="chip-icon">🕌</span>
+                                        <span class="chip-label">Halal</span>
+                                    </button>
+                                    <button class="preference-chip" data-preference="glutenfree" onclick="togglePreference(this)">
+                                        <span class="chip-icon">🌾</span>
+                                        <span class="chip-label">Gluten Free</span>
+                                    </button>
+                                    <button class="preference-chip" data-preference="highprotein" onclick="togglePreference(this)">
+                                        <span class="chip-icon">💪</span>
+                                        <span class="chip-label">High Protein</span>
+                                    </button>
+                                </div>
+                                <div class="step-navigation">
+                                    <button class="step-back-btn" onclick="goToStep(1)">
+                                        <span class="arrow">←</span>
+                                        Back
+                                    </button>
+                                    <button class="step-next-btn" onclick="goToStep(3)">
+                                        Continue
+                                        <span class="arrow">→</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Step 3: Ingredients -->
+                            <div class="generator-step" data-step="3">
+                                <div class="step-header">
+                                    <div class="step-number">03</div>
+                                    <div class="step-info">
+                                        <h2>What do you have?</h2>
+                                        <p>Select ingredients you already have</p>
+                                    </div>
+                                </div>
+                                <div class="ingredients-grid">
+                                    <button class="ingredient-bubble" data-ingredient="pasta" onclick="toggleIngredient(this)">
+                                        <span class="bubble-icon">🍝</span>
+                                        <span class="bubble-label">Pasta</span>
+                                    </button>
+                                    <button class="ingredient-bubble" data-ingredient="rice" onclick="toggleIngredient(this)">
+                                        <span class="bubble-icon">🍚</span>
+                                        <span class="bubble-label">Rice</span>
+                                    </button>
+                                    <button class="ingredient-bubble" data-ingredient="potatoes" onclick="toggleIngredient(this)">
+                                        <span class="bubble-icon">🥔</span>
+                                        <span class="bubble-label">Potatoes</span>
+                                    </button>
+                                    <button class="ingredient-bubble" data-ingredient="eggs" onclick="toggleIngredient(this)">
+                                        <span class="bubble-icon">🥚</span>
+                                        <span class="bubble-label">Eggs</span>
+                                    </button>
+                                    <button class="ingredient-bubble" data-ingredient="chicken" onclick="toggleIngredient(this)">
+                                        <span class="bubble-icon">🍗</span>
+                                        <span class="bubble-label">Chicken</span>
+                                    </button>
+                                    <button class="ingredient-bubble" data-ingredient="frozenveg" onclick="toggleIngredient(this)">
+                                        <span class="bubble-icon">🥦</span>
+                                        <span class="bubble-label">Frozen Veg</span>
+                                    </button>
+                                    <button class="ingredient-bubble" data-ingredient="beef" onclick="toggleIngredient(this)">
+                                        <span class="bubble-icon">🥩</span>
+                                        <span class="bubble-label">Beef</span>
+                                    </button>
+                                    <button class="ingredient-bubble" data-ingredient="fish" onclick="toggleIngredient(this)">
+                                        <span class="bubble-icon">🐟</span>
+                                        <span class="bubble-label">Fish</span>
+                                    </button>
+                                    <button class="ingredient-bubble" data-ingredient="beans" onclick="toggleIngredient(this)">
+                                        <span class="bubble-icon">🫘</span>
+                                        <span class="bubble-label">Beans</span>
+                                    </button>
+                                    <button class="ingredient-bubble" data-ingredient="bread" onclick="toggleIngredient(this)">
+                                        <span class="bubble-icon">🍞</span>
+                                        <span class="bubble-label">Bread</span>
+                                    </button>
+                                    <button class="ingredient-bubble" data-ingredient="cheese" onclick="toggleIngredient(this)">
+                                        <span class="bubble-icon">🧀</span>
+                                        <span class="bubble-label">Cheese</span>
+                                    </button>
+                                    <button class="ingredient-bubble" data-ingredient="milk" onclick="toggleIngredient(this)">
+                                        <span class="bubble-icon">🥛</span>
+                                        <span class="bubble-label">Milk</span>
+                                    </button>
+                                </div>
+                                <div class="step-navigation">
+                                    <button class="step-back-btn" onclick="goToStep(2)">
+                                        <span class="arrow">←</span>
+                                        Back
+                                    </button>
+                                    <button class="step-next-btn generate-btn" onclick="generateRecipes()">
+                                        <span class="generate-icon">✨</span>
+                                        Generate My Recipes
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- RESULTS SECTION -->
+        <section class="results-section" id="results" style="display: none;">
+            <div class="results-header">
+                <h2>Your Perfect Meals</h2>
+                <p>Based on your budget and preferences</p>
+                <button class="start-over-btn" onclick="startOver()">
+                    ← Start Over
+                </button>
+            </div>
+            <div class="recipes-grid" id="recipesContainer"></div>
+        </section>
+
+        <!-- RECIPE DETAIL MODAL -->
+        <div class="modal-overlay" id="recipeModal" aria-hidden="true">
+            <div class="modal-content" role="dialog" aria-labelledby="modalTitle">
+                <button type="button" class="modal-close" id="modalClose" aria-label="Close">&times;</button>
+                <div id="modalBody"></div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <p>FoodMaxxing © 2026 • Making student meals simple and affordable</p>
+            </div>
+        </footer>
+
+        <button type="button" class="dark-mode-toggle" id="darkModeToggle" aria-label="Toggle dark mode" title="Dark mode">
+            <span class="dark-mode-icon sun-icon">☀️</span>
+            <span class="dark-mode-icon moon-icon" aria-hidden="true">🌙</span>
+        </button>
+        <div id="chatbotRoot"></div>
+    </div>
+
+    <script src="/recipes-api.js"></script>
+    <script src="/script.js"></script>
+    <script src="/dark-mode.js"></script>
+    <script src="/chatbot.js"></script>
+</body>
+</html>

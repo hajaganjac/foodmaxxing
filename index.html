@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FoodMaxxing - Affordable Meals for Dutch Students</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <script src="/auth.js"></script>
+    <script>
+        if (!getCurrentUser()) { window.location.replace('login.html'); }
+    </script>
+    <div class="app-container">
+        <!-- NAVIGATION -->
+        <nav class="navbar">
+            <div class="navbar-content">
+                <div class="logo">
+                    <span class="logo-icon">🍜</span>
+                    <span class="logo-text">FoodMaxxing</span>
+                </div>
+                <div class="nav-links">
+                    <a href="generator.html" class="nav-link">Generator</a>
+                    <a href="chat.html" class="nav-link">Chatbot</a>
+                    <a href="#discoveries" class="nav-link">Ideas</a>
+                    <a href="profile.html" class="nav-link">Profile</a>
+                    <button type="button" class="nav-link nav-logout" id="navLogout" style="background:none;border:none;cursor:pointer;font:inherit;padding:0;padding-bottom:4px;">Log out</button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- HERO SECTION -->
+        <section class="hero">
+            <div class="hero-content">
+                <h1 class="hero-headline">Affordable meals.<br><span class="highlight">Less stress.</span></h1>
+                <p class="hero-subtitle">A calm recipe generator for Dutch students. Generate cheap, delicious meals based on ingredients you have.</p>
+                
+                <div class="hero-cta">
+                    <a href="generator.html" class="cta-button cta-button-link">
+                        Generate My Recipe
+                        <span class="arrow">→</span>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="hero-visual">
+                <div class="floating-card card-1">
+                    <div class="card-emoji">🍝</div>
+                </div>
+                <div class="floating-card card-2">
+                    <div class="card-emoji">🥘</div>
+                </div>
+                <div class="floating-card card-3">
+                    <div class="card-emoji">🥗</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ARTICLES SECTION -->
+        <section class="articles-section" id="articles">
+            <h2 class="articles-headline">Tips for Smarter Grocery Shopping</h2>
+            <p class="articles-subtitle">Save money and eat well as a student</p>
+            <div id="article-cards-root"></div>
+        </section>
+
+        <!-- DISCOVERY SECTION (React + Framer Motion) -->
+        <section class="discovery-section" id="discoveries">
+            <h2>Student Meal Ideas</h2>
+            <p class="discovery-subtitle">Quick inspiration for every mood</p>
+            <div id="discovery-cards-root"></div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+            <div class="footer-content">
+                <p>FoodMaxxing © 2026 • Making student meals simple and affordable</p>
+            </div>
+        </footer>
+
+        <!-- Dark mode toggle (bottom-left) -->
+        <button type="button" class="dark-mode-toggle" id="darkModeToggle" aria-label="Toggle dark mode" title="Dark mode">
+            <span class="dark-mode-icon sun-icon">☀️</span>
+            <span class="dark-mode-icon moon-icon" aria-hidden="true">🌙</span>
+        </button>
+
+        <!-- AI Chatbot (right side) -->
+        <div id="chatbotRoot"></div>
+    </div>
+
+    <script src="/recipes-api.js"></script>
+    <script src="/script.js"></script>
+    <script src="/dark-mode.js"></script>
+    <script src="/chatbot.js"></script>
+    <script type="module" src="/src/main.jsx"></script>
+</body>
+</html>
